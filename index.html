@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beating Hearts</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #fce4ec;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .heart {
+            width: 30px;
+            height: 30px;
+            background-color: #e91e63;
+            position: absolute;
+            transform: rotate(-45deg);
+            animation-timing-function: ease-in-out;
+            opacity: 0.8;
+            transition: transform 0.2s, opacity 0.2s;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 30px;
+            height: 30px;
+            background-color: #e91e63;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .heart::before {
+            top: -15px;
+            left: 0;
+        }
+        .heart::after {
+            top: 0;
+            left: 15px;
+        }
+
+        @keyframes beat {
+            0%, 100% {
+                transform: scale(1) rotate(-45deg);
+                background-color: #e91e63;
+            }
+            50% {
+                transform: scale(1.4) rotate(-45deg);
+                background-color: #ff4081;
+            }
+        }
+
+        /* Pop effect */
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* "I Love You" Text */
+        .love-text {
+            position: absolute;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #e91e63;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            pointer-events: none;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 600px) {
+            .heart {
+                width: 20px;
+                height: 20px;
+            }
+            .heart::before,
+            .heart::after {
+                width: 20px;
+                height: 20px;
+            }
+            .heart::before {
+                top: -10px;
+            }
+            .heart::after {
+                left: 10px;
+            }
+
+            .love-text {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="love-text" id="loveText">I Love You ❤️</div>
+
+<script>
+    const loveText = document.getElementById('loveText');
+
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        document.body.appendChild(heart);
+        
+        positionHeart(heart);
+
+        // Random beat time (0.6s to 2.5s)
+        const duration = (Math.random() * 1.9 + 0.6).toFixed(2);
+        heart.style.animation = `beat ${duration}s infinite`;
+
+        // Pop effect on click/touch
+        heart.addEventListener('click', () => {
+            heart.style.animation = 'pop 0.4s forwards';
+            showLoveText();
+
+            setTimeout(() => {
+                positionHeart(heart); // Reposition after pop
+                const newDuration = (Math.random() * 1.9 + 0.6).toFixed(2);
+                heart.style.animation = `beat ${newDuration}s infinite`;
+            }, 400); // Wait for pop animation to finish
+        });
+    }
+
+    function positionHeart(heart) {
+        // Random position
+        const x = Math.random() * (window.innerWidth - 40);
+        const y = Math.random() * (window.innerHeight - 40);
+        heart.style.left = `${x}px`;
+        heart.style.top = `${y}px`;
+        heart.style.opacity = 1;
+        heart.style.transform = 'scale(1) rotate(-45deg)';
+    }
+
+    function showLoveText() {
+        loveText.style.opacity = '1';
+        setTimeout(() => {
+            loveText.style.opacity = '0';
+        }, 1000); // Fades out after 1 second
+    }
+
+    // Generate 50 hearts
+    for (let i = 0; i < 50; i++) {
+        createHeart();
+    }
+</script>
+
+</body>
+</html>
